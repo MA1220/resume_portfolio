@@ -64,7 +64,6 @@ const Skills = () => {
       title: "Frameworks & Tools",
       skills: [
         { name: "Spring Boot / Spring", icon: <SiSpring />, color: "text-green-600" },
-        // kept a generic icon for networking / WebClient / WebFlux
         { name: "Spring WebClient / WebFlux", icon: <SiNodedotjs />, color: "text-teal-500" },
         { name: "Microservices", icon: <FaDocker />, color: "text-sky-600" },
         { name: "Docker", icon: <FaDocker />, color: "text-blue-500" },
@@ -77,7 +76,6 @@ const Skills = () => {
       title: "Cloud & Monitoring",
       skills: [
         { name: "GCP", icon: <SiGooglecloud />, color: "text-blue-500" },
-        // replaced non-existent SiMicrosoftazure with FaMicrosoft
         { name: "Azure", icon: <FaMicrosoft />, color: "text-blue-700" },
         { name: "Prometheus", icon: <SiPrometheus />, color: "text-amber-600" },
         { name: "Grafana", icon: <SiGrafana />, color: "text-orange-600" },
@@ -96,7 +94,7 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-20 section-padding bg-gray-50 dark:bg-gray-900">
+    <section id="skills" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
       <div className="container-max">
         <motion.div
           variants={containerVariants}
@@ -127,7 +125,7 @@ const Skills = () => {
                   {category.title}
                 </h3>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-6">
                   {category.skills.map((skill, skillIndex) => (
                     <motion.div
                       key={skillIndex}
@@ -140,7 +138,7 @@ const Skills = () => {
                       className="card text-center group cursor-pointer"
                       title={skill.name}
                     >
-                      <div className={`text-4xl mb-3 ${skill.color} group-hover:scale-110 transition-transform duration-200`}>
+                      <div className={`text-3xl sm:text-4xl mb-2 sm:mb-3 ${skill.color} group-hover:scale-110 transition-transform duration-200`}>
                         {skill.icon}
                       </div>
                       <h4 className="text-sm font-medium text-gray-900 dark:text-white">
@@ -159,9 +157,9 @@ const Skills = () => {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
                 Additional Competencies
               </h3>
-              <div className="flex flex-wrap justify-center gap-3">
+              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2">
                 {[
-                  "System Design", "Distributed Systems", "Scalability", "DSA",
+                  "System Design", "Distributed Systems", "Scalability",
                   "Performance Optimization", "Security", "REST APIs", "ELK Stack",
                   "Agile/Scrum", "Code Review"
                 ].map((skill, index) => (
