@@ -1,8 +1,10 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FiGithub, FiExternalLink, FiCode, FiStar } from 'react-icons/fi';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiGithub, FiExternalLink, FiCode, FiStar, FiX } from 'react-icons/fi';
 
 const Projects = () => {
+  const [selectedProject, setSelectedProject] = useState(null);
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -31,7 +33,7 @@ const Projects = () => {
       title: "Enhanced MyJio App Search",
       description:
         "Architected a distributed search backend for the MyJio app using Spring Boot, ELK, and Docker. Handled 1000+ QPS with sub-100ms latency and implemented a custom sorting algorithm to improve relevance and engagement.",
-      image: "/myjioApp.webp", // replace with a real image in /public/images if you have one
+      image: `${process.env.PUBLIC_URL}/myjioApp.jpg`,
       technologies: ["Java", "Spring Boot", "Elasticsearch", "ELK Stack", "Docker", "Microservices"],
       githubUrl: null,
       liveUrl: null,
@@ -41,32 +43,12 @@ const Projects = () => {
       title: "Search API for Jio Financial App",
       description:
         "Developed scalable Elasticsearch-based search APIs with Spring WebClient, secure authentication, and resilient infrastructure. Optimized endpoints to support 1000+ QPS ensuring smooth UX and reliability under load.",
-      image: "/jfs.webp", // optional placeholder image path
+      image: `${process.env.PUBLIC_URL}/jfs.jpg`,
       technologies: ["Spring WebClient", "Elasticsearch", "GCP", "Java", "Spring Security", "Docker"],
       githubUrl: null,
       liveUrl: null,
       featured: true
     }
-    // {
-    //   title: "Config Automation with Kubernetes ConfigMaps",
-    //   description:
-    //     "Automated configuration management for services using Kubernetes ConfigMaps which reduced manual deployment steps and improved deployment reliability across environments.",
-    //   image: "/images/config-automation.jpg",
-    //   technologies: ["Kubernetes", "ConfigMaps", "CI/CD", "Helm", "GitOps"],
-    //   githubUrl: null,
-    //   liveUrl: null,
-    //   featured: false
-    // },
-    // {
-    //   title: "Interactive My City / Live TV Modules",
-    //   description:
-    //     "Built interactive modules for Jio News using reactive programming to boost content consumption and engagement. Focused on performant streaming and lazy-loading content strategies.",
-    //   image: "/images/mycity-live-tv.jpg",
-    //   technologies: ["Reactive Programming", "Java", "Spring Boot", "WebFlux"],
-    //   githubUrl: null,
-    //   liveUrl: null,
-    //   featured: false
-    // }
   ];
 
   return (
@@ -109,12 +91,12 @@ const Projects = () => {
                     </div>
                   )}
 
-                  {/* Use a fallback gradient if image path is missing */}
                   {project.image ? (
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-48 md:h-64 object-cover transition-transform duration-300 hover:scale-105"
+                      className="w-full h-48 md:h-64 object-cover transition-transform duration-300 hover:scale-105 cursor-pointer"
+                      onClick={() => setSelectedProject(project)}
                     />
                   ) : (
                     <div className="w-full h-48 md:h-64 bg-gradient-to-r from-gray-200 to-gray-300 dark:from-gray-800 dark:to-gray-700 flex items-center justify-center text-gray-600 dark:text-gray-300">
@@ -122,7 +104,7 @@ const Projects = () => {
                     </div>
                   )}
 
-                  {/* Overlay Links only shown when URLs provided */}
+                  {/* Overlay Links */}
                   {(project.githubUrl || project.liveUrl) && (
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
                       <div className="flex gap-4">
@@ -181,56 +163,86 @@ const Projects = () => {
                       </span>
                     ))}
                   </div>
-
-                  {/* Project Links (conditionally rendered) */}
-                  <div className="flex gap-4 pt-4">
-                    {project.githubUrl && (
-                      <motion.a
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
-                      >
-                        <FiGithub size={18} />
-                        Code
-                      </motion.a>
-                    )}
-
-                    {project.liveUrl && (
-                      <motion.a
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-                      >
-                        <FiExternalLink size={18} />
-                        Live Demo
-                      </motion.a>
-                    )}
-                  </div>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          {/* View More Projects */}
-          {/* <motion.div variants={itemVariants} className="text-center mt-12">
-            <motion.a
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              href="https://www.linkedin.com/in/maheshwar-a-02b6b6163"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 btn-secondary"
-            >
-              <FiGithub />
-              View More (LinkedIn)
-            </motion.a>
-          </motion.div> */}
+          {/* Project Modal */}
+          <AnimatePresence>
+            {selectedProject && (
+              <motion.div
+                className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedProject(null)}
+              >
+                <motion.div
+                  className="relative bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-3xl w-full p-6"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.8, opacity: 0 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Close Button */}
+                  <button
+                    onClick={() => setSelectedProject(null)}
+                    className="absolute top-4 right-4 text-gray-600 dark:text-gray-300 hover:text-red-500 text-2xl"
+                  >
+                    <FiX />
+                  </button>
+
+                  {/* Project Image */}
+                  <img
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
+                    className="rounded-xl mb-6 w-full"
+                  />
+
+                  {/* Transparent Overlay Info */}
+                  <div className="absolute bottom-10 left-10 right-10 bg-black bg-opacity-50 text-white p-4 rounded-lg">
+                    <h2 className="text-2xl font-bold">{selectedProject.title}</h2>
+                    <p className="text-sm mt-2">{selectedProject.description}</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {selectedProject.technologies.map((tech, i) => (
+                        <span
+                          key={i}
+                          className="px-3 py-1 text-xs bg-white bg-opacity-20 rounded-lg border border-gray-300"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* GitHub / Live Links */}
+                    <div className="flex gap-4 mt-4">
+                      {selectedProject.githubUrl && (
+                        <a
+                          href={selectedProject.githubUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors font-medium"
+                        >
+                          <FiGithub /> Code
+                        </a>
+                      )}
+                      {selectedProject.liveUrl && (
+                        <a
+                          href={selectedProject.liveUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+                        >
+                          <FiExternalLink /> Live Demo
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>
