@@ -67,7 +67,7 @@ const Contact = () => {
       const success = await submitToGoogleForm();
 
       if (success) {
-        setStatusMessage("✅ Message sent successfully! Your response has been recorded in Google Sheets.");
+        setStatusMessage("✅ Thanks for reaching out! I’ll be in touch shortly. 🚀");
         setStatusType("success");
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
