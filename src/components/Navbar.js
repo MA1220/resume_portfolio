@@ -21,7 +21,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     { name: 'Skills', href: '#skills' },
     { name: 'Experience', href: '#experience' },
     { name: 'Projects', href: '#projects' },
-    { name: 'Resume', href: '/Maheshwar_Awale_Resume.pdf', external: true },
+    { name: 'Resume', href: `${process.env.PUBLIC_URL}/Maheshwar_Resume.pdf`, external: true },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -178,7 +178,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
 
             <div className="flex items-center gap-3 px-4 pt-2">
               <a
-                href="/Maheshwar_Awale_Resume.pdf"
+                href="/Maheshwar_Resume.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-3 py-2 bg-primary-600 hover:bg-primary-700 rounded-md text-white font-medium"

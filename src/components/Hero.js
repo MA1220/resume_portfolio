@@ -27,9 +27,9 @@ const Hero = () => {
 
   const handleDownloadResume = () => {
     const link = document.createElement('a');
-    // Make sure you place the file at public/Maheshwar_Awale_Resume.pdf in your app
-    link.href = '/Maheshwar_Awale_Resume.pdf';
-    link.download = 'Maheshwar_Awale_Resume.pdf';
+    // Make sure you place the file at public/Maheshwar_Resume.pdf in your app
+    link.href = `${process.env.PUBLIC_URL}/Maheshwar_Resume.pdf`;
+    link.download = 'Maheshwar_Resume.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
