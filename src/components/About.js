@@ -85,7 +85,7 @@ const About = () => {
                   Career Goals
                 </h4>
                 <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
-                  To advance as a senior backend engineer specializing in distributed systems and cloud architecture, 
+                  To advance as a Software Engineer specializing in distributed systems and cloud architecture, 
                   contributing to large-scale platforms that serve millions of users while continuously expanding 
                   expertise in system design and performance optimization.
                 </p>
