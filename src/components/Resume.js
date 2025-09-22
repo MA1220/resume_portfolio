@@ -59,7 +59,7 @@ const Resume = () => {
   ];
 
   return (
-    <section id="resume" className="py-20 section-padding bg-white dark:bg-gray-800">
+    <section id="resume" className="py-20 section-padding" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <div className="container-max">
         <motion.div
           variants={containerVariants}
@@ -69,46 +69,39 @@ const Resume = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--text)' }}>
               My <span className="text-gradient">Resume</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-purple-600 mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <div className="w-24 h-1 mx-auto rounded-full mb-6" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}></div>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--muted)' }}>
               Download my complete resume to learn more about my background, skills, and experience
             </p>
           </motion.div>
 
           <div className="max-w-4xl mx-auto">
             {/* Resume Preview Card */}
-            <motion.div
-              variants={itemVariants}
-              className="card text-center mb-12"
-            >
+            <motion.div variants={itemVariants} style={{ background: 'var(--surface)', padding: 20, borderRadius: 12, textAlign: 'center', marginBottom: 24 }}>
               <div className="mb-8">
-                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-primary-500 to-purple-600 rounded-2xl flex items-center justify-center">
-                  <FiFileText className="text-white text-4xl" />
+                <div className="w-24 h-24 mx-auto mb-6 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}>
+                  <FiFileText style={{ color: '#fff', fontSize: 28 }} />
                 </div>
 
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                <h3 className="text-2xl font-bold mb-4" style={{ color: 'var(--text)' }}>
                   Maheshwar Awale — Software Development Engineer 1
                 </h3>
 
-                <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">
+                <p style={{ color: 'var(--muted)', marginBottom: 16 }}>
                   Backend engineer focused on scaling services for hundreds of millions of users, building resilient search systems, and leading cloud migrations (Azure → GCP).
                 </p>
 
                 {/* Resume Highlights */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                   {resumeHighlights.map((highlight, index) => (
-                    <motion.div
-                      key={index}
-                      whileHover={{ scale: 1.05 }}
-                      className="text-center"
-                    >
-                      <div className="text-sm font-semibold text-gradient mb-2">
+                    <motion.div key={index} whileHover={{ scale: 1.05 }}>
+                      <div className="text-sm font-semibold mb-2" style={{ color: 'var(--text)' }}>
                         {highlight.category}
                       </div>
-                      <div className="text-xs md:text-sm text-gray-600 dark:text-gray-400">
+                      <div style={{ color: 'var(--muted)', fontSize: 14 }}>
                         {highlight.details}
                       </div>
                     </motion.div>
@@ -117,85 +110,41 @@ const Resume = () => {
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleDownloadResume}
-                    className="btn-primary flex items-center gap-2"
-                    aria-label="Download resume"
-                  >
-                    <FiDownload />
-                    Download Resume
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleDownloadResume} style={{ background: 'var(--accent)', color: '#fff', padding: '0.6rem 1rem', borderRadius: 8 }}>
+                    <FiDownload /> Download Resume
                   </motion.button>
 
-                  <motion.button
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleViewResume}
-                    className="btn-secondary flex items-center gap-2"
-                    aria-label="View resume online"
-                  >
-                    <FiEye />
-                    View Online
+                  <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={handleViewResume} style={{ background: 'transparent', color: 'var(--text)', padding: '0.6rem 1rem', borderRadius: 8, border: '1px solid rgba(0,0,0,0.06)' }}>
+                    <FiEye /> View Online
                   </motion.button>
                 </div>
               </div>
             </motion.div>
 
             {/* Additional Info */}
-            <motion.div
-              variants={itemVariants}
-              className="grid md:grid-cols-2 gap-8"
-            >
-              <div className="card">
-                <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+            <motion.div variants={itemVariants} className="grid md:grid-cols-2 gap-8">
+              <div style={{ background: 'var(--surface)', padding: 20, borderRadius: 12 }}>
+                <h4 className="text-xl font-semibold mb-4" style={{ color: 'var(--text)' }}>
                   What's Included
                 </h4>
-                <ul className="space-y-3 text-gray-600 dark:text-gray-400">
-                  <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                    Professional summary and objectives
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                    Detailed work experience and achievements (Reliance Jio — SDE1)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                    Technical skills and proficiencies (Java, Spring Boot, ELK, GCP)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                    Education and certifications
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="w-2 h-2 bg-primary-500 rounded-full"></span>
-                    Notable projects and contributions
-                  </li>
+                <ul style={{ color: 'var(--muted)' }}>
+                  <li style={{ marginBottom: 8 }}>Professional summary and objectives</li>
+                  <li style={{ marginBottom: 8 }}>Detailed work experience and achievements (Reliance Jio — SDE1)</li>
+                  <li style={{ marginBottom: 8 }}>Technical skills and proficiencies (Java, Spring Boot, ELK, GCP)</li>
+                  <li style={{ marginBottom: 8 }}>Education and certifications</li>
+                  <li style={{ marginBottom: 8 }}>Notable projects and contributions</li>
                 </ul>
               </div>
 
-              <div className="card">
-                <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              <div style={{ background: 'var(--surface)', padding: 20, borderRadius: 12 }}>
+                <h4 className="text-xl font-semibold mb-4" style={{ color: 'var(--text)' }}>
                   Contact Information
                 </h4>
-                <div className="space-y-3 text-gray-600 dark:text-gray-400">
-                  <div>
-                    <span className="font-medium">Email:</span>{' '}
-                    <a href="mailto:maheshwarawale12@gmail.com" className="hover:underline">maheshwarawale12@gmail.com</a>
-                  </div>
-                  <div>
-                    <span className="font-medium">Phone:</span>{' '}
-                    <a href="tel:+919321825853" className="hover:underline">+91-9321825853</a>
-                  </div>
-                  <div>
-                    <span className="font-medium">LinkedIn:</span>{' '}
-                    <a href="https://linkedin.com/in/maheshwar-a-02b6b6163" target="_blank" rel="noopener noreferrer" className="hover:underline">linkedin.com/in/maheshwar-a-02b6b6163</a>
-                  </div>
-                  <div>
-                    <span className="font-medium">Location:</span>{' '}
-                    Navi Mumbai, India
-                  </div>
+                <div style={{ color: 'var(--muted)' }}>
+                  <div><span style={{ fontWeight: 600 }}>Email:</span> <a href="mailto:maheshwarawale12@gmail.com" style={{ color: 'var(--muted)' }}>maheshwarawale12@gmail.com</a></div>
+                  <div><span style={{ fontWeight: 600 }}>Phone:</span> <a href="tel:+919321825853" style={{ color: 'var(--muted)' }}>+91-9321825853</a></div>
+                  <div><span style={{ fontWeight: 600 }}>LinkedIn:</span> <a href="https://linkedin.com/in/maheshwar-a-02b6b6163" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--muted)' }}>linkedin.com/in/maheshwar-a-02b6b6163</a></div>
+                  <div><span style={{ fontWeight: 600 }}>Location:</span> Navi Mumbai, India</div>
                 </div>
               </div>
             </motion.div>

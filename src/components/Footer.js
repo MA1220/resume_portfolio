@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FiHeart, FiLinkedin, FiMail, FiArrowUp, FiPhone, FiMapPin } from 'react-icons/fi';
+import { FiHeart, FiLinkedin, FiMail, FiArrowUp, FiMapPin } from 'react-icons/fi';
 
 const Footer = () => {
   const scrollToTop = () => {
@@ -39,33 +39,21 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
+    <footer style={{ background: 'var(--surface)', color: 'var(--muted)', paddingTop: 24, paddingBottom: 24 }}>
       <div className="container-max section-padding">
         {/* Main Footer Content */}
         <div className="py-12 grid md:grid-cols-3 gap-8">
           {/* Brand Section */}
           <div className="space-y-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="text-2xl font-bold text-gradient cursor-pointer"
-              onClick={() => scrollToSection('#home')}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold cursor-pointer" onClick={() => scrollToSection('#home')} style={{ color: 'var(--text)' }}>
               Maheshwar Awale
             </motion.div>
-            <p className="text-gray-400 leading-relaxed">
+            <p style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
               Software Development Engineer 1 — focused on scalable backend systems, search, and cloud migrations.
             </p>
-            <div className="flex space-x-4">
+            <div style={{ display: 'flex', gap: 12 }}>
               {socialLinks.map((social, index) => (
-                <motion.a
-                  key={index}
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white hover:bg-gray-700 transition-colors"
-                  aria-label={social.name}
-                >
+                <motion.a key={index} whileHover={{ scale: 1.1, y: -2 }} href={social.url} target="_blank" rel="noopener noreferrer" style={{ padding: 8, borderRadius: 8, background: 'rgba(0,0,0,0.06)', color: 'var(--muted)' }} aria-label={social.name}>
                   {social.icon}
                 </motion.a>
               ))}
@@ -74,15 +62,10 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>Quick Links</h3>
             <div className="grid grid-cols-2 gap-2">
               {quickLinks.map((link, index) => (
-                <motion.button
-                  key={index}
-                  whileHover={{ x: 5 }}
-                  onClick={() => scrollToSection(link.href)}
-                  className="text-gray-400 hover:text-white transition-colors text-left"
-                >
+                <motion.button key={index} whileHover={{ x: 5 }} onClick={() => scrollToSection(link.href)} style={{ background: 'transparent', color: 'var(--muted)', textAlign: 'left' }}>
                   {link.name}
                 </motion.button>
               ))}
@@ -91,21 +74,16 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Get In Touch</h3>
-            <div className="space-y-2 text-gray-400">
-              <a href="mailto:maheshwarawale12@gmail.com" className="block hover:underline">maheshwarawale12@gmail.com</a>
-              <a href="tel:+919321825853" className="block hover:underline">+91-9321825853</a>
-              <div className="flex items-center gap-2">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text)' }}>Get In Touch</h3>
+            <div style={{ color: 'var(--muted)' }}>
+              <a href="mailto:maheshwarawale12@gmail.com" style={{ display: 'block', marginBottom: 8, color: 'var(--muted)' }}>maheshwarawale12@gmail.com</a>
+              <a href="tel:+919321825853" style={{ display: 'block', marginBottom: 8, color: 'var(--muted)' }}>+91-9321825853</a>
+              <div className="flex items-center gap-2" style={{ color: 'var(--muted)' }}>
                 <FiMapPin />
                 <span>Navi Mumbai, India</span>
               </div>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => scrollToSection('#contact')}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg transition-colors font-medium"
-            >
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => scrollToSection('#contact')} style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'var(--accent)', color: '#fff', borderRadius: 8 }}>
               <FiMail />
               Send Message
             </motion.button>
@@ -113,21 +91,15 @@ const Footer = () => {
         </div>
 
         {/* Bottom Footer */}
-        <div className="border-t border-gray-800 py-6 flex flex-col md:flex-row justify-between items-center">
-          <div className="flex items-center gap-2 text-gray-400 mb-4 md:mb-0">
+        <div style={{ borderTop: '1px solid rgba(0,0,0,0.06)', paddingTop: 16, display: 'flex', flexDirection: 'column', mdFlexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--muted)', marginBottom: 12 }}>
             <span>© {currentYear} Maheshwar Awale. Made with</span>
-            <FiHeart className="text-red-500 w-4 h-4" />
+            <FiHeart style={{ color: '#ef4444' }} />
             <span>React & Tailwind CSS</span>
           </div>
 
           {/* Back to Top Button */}
-          <motion.button
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={scrollToTop}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-gray-400 hover:text-white"
-            aria-label="Back to top"
-          >
+          <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={scrollToTop} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 12px', background: 'rgba(0,0,0,0.06)', color: 'var(--muted)', borderRadius: 8 }}>
             <FiArrowUp />
             Back to Top
           </motion.button>

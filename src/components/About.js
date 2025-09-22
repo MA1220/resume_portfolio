@@ -44,7 +44,7 @@ const About = () => {
   ];
 
   return (
-    <section id="about" className="py-20 section-padding bg-white dark:bg-gray-800">
+    <section id="about" className="py-20 section-padding" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <div className="container-max">
         <motion.div
           variants={containerVariants}
@@ -54,25 +54,25 @@ const About = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--text)' }}>
               About <span className="text-gradient">Me</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-purple-600 mx-auto rounded-full"></div>
+            <div className="w-24 h-1 mx-auto rounded-full" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}></div>
           </motion.div>
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Text Content */}
             <motion.div variants={itemVariants} className="space-y-6">
               <div className="space-y-4">
-                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-semibold" style={{ color: 'var(--text)' }}>
                   Hello! I'm Maheshwar Awale
                 </h3>
-                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
                   Software Development Engineer 1 with experience scaling backend services for 500M+ users, 
                   optimizing APIs, and leading cloud migrations. Skilled in Java, Spring Boot, microservices, 
                   and cloud technologies (GCP, Azure).
                 </p>
-                <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
                   Passionate about building scalable, high-performance systems that can handle massive user loads 
                   while maintaining optimal performance. I thrive in collaborative environments and enjoy solving 
                   complex distributed systems challenges.
@@ -80,11 +80,11 @@ const About = () => {
               </div>
 
               {/* Career Goals */}
-              <div className="bg-gray-50 dark:bg-gray-700 p-6 rounded-xl">
-                <h4 className="text-xl font-semibold text-gray-900 dark:text-white mb-3">
+              <div style={{ background: 'var(--surface)', padding: 24, borderRadius: 12 }}>
+                <h4 className="text-xl font-semibold mb-3" style={{ color: 'var(--text)' }}>
                   Career Goals
                 </h4>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
+                <p style={{ color: 'var(--muted)', lineHeight: 1.6 }}>
                   To advance as a Software Engineer specializing in distributed systems and cloud architecture, 
                   contributing to large-scale platforms that serve millions of users while continuously expanding 
                   expertise in system design and performance optimization.
@@ -94,7 +94,7 @@ const About = () => {
 
             {/* Right Column - Key Strengths */}
             <motion.div variants={itemVariants} className="space-y-6">
-              <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-8">
+              <h3 className="text-2xl font-semibold mb-8" style={{ color: 'var(--text)' }}>
                 Key Strengths
               </h3>
               
@@ -105,16 +105,17 @@ const About = () => {
                     variants={itemVariants}
                     whileHover={{ scale: 1.02 }}
                     className="card"
+                    style={{ background: 'var(--surface)', padding: 16, borderRadius: 12 }}
                   >
                     <div className="flex items-start space-x-4">
-                      <div className="flex-shrink-0 p-3 bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded-lg">
+                      <div className="flex-shrink-0 p-3 rounded-lg" style={{ background: 'rgba(16,185,129,0.08)', color: 'var(--accent)' }}>
                         {strength.icon}
                       </div>
                       <div>
-                        <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+                        <h4 className="text-lg font-semibold mb-2" style={{ color: 'var(--text)' }}>
                           {strength.title}
                         </h4>
-                        <p className="text-gray-600 dark:text-gray-400">
+                        <p style={{ color: 'var(--muted)' }}>
                           {strength.description}
                         </p>
                       </div>
@@ -141,10 +142,10 @@ const About = () => {
                 whileHover={{ scale: 1.05 }}
                 className="text-center"
               >
-                <div className="text-3xl md:text-4xl font-bold text-gradient mb-2">
+                <div className="text-3xl md:text-4xl font-bold mb-2" style={{ color: 'var(--text)' }}>
                   {stat.number}
                 </div>
-                <div className="text-gray-600 dark:text-gray-400 font-medium">
+                <div style={{ color: 'var(--muted)', fontWeight: 500 }}>
                   {stat.label}
                 </div>
               </motion.div>

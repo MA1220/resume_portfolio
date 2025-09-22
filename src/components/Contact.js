@@ -95,16 +95,16 @@ const Contact = () => {
   ];
 
   return (
-    <section id="contact" className="py-20 section-padding bg-gray-50 dark:bg-gray-900">
+    <section id="contact" className="py-20 section-padding" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <div className="container-max">
         <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }}>
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--text)' }}>
               Get In <span className="text-gradient">Touch</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-purple-600 mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <div className="w-24 h-1 mx-auto rounded-full mb-6" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}></div>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--muted)' }}>
               I'm always open to discussing new opportunities, interesting projects, or just having a chat about technology
             </p>
           </motion.div>
@@ -113,8 +113,8 @@ const Contact = () => {
             {/* Contact Info */}
             <motion.div variants={itemVariants} className="space-y-8">
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Let's Connect</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
+                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>Let's Connect</h3>
+                <p style={{ color: 'var(--muted)', marginBottom: 16 }}>
                   Whether you have a project in mind, want to collaborate, or just want to say hello, 
                   I'd love to hear from you. Feel free to reach out through any of the channels below.
                 </p>
@@ -122,14 +122,14 @@ const Contact = () => {
 
               <div className="space-y-6">
                 {contactInfo.map((info, index) => (
-                  <motion.div key={index} whileHover={{ scale: 1.02 }} className="flex items-center gap-4 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-                    <div className="flex-shrink-0 p-3 bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 rounded-lg">{info.icon}</div>
+                  <motion.div key={index} whileHover={{ scale: 1.02 }} className="flex items-center gap-4 p-4 rounded-xl" style={{ background: 'var(--surface)' }}>
+                    <div className="flex-shrink-0 p-3 rounded-lg" style={{ background: 'rgba(16,185,129,0.08)', color: 'var(--accent)' }}>{info.icon}</div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 dark:text-white">{info.title}</h4>
+                      <h4 style={{ fontWeight: 600, color: 'var(--text)' }}>{info.title}</h4>
                       {info.link ? (
-                        <a href={info.link} className="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">{info.details}</a>
+                        <a href={info.link} style={{ color: 'var(--muted)' }}>{info.details}</a>
                       ) : (
-                        <span className="text-gray-600 dark:text-gray-400">{info.details}</span>
+                        <span style={{ color: 'var(--muted)' }}>{info.details}</span>
                       )}
                     </div>
                   </motion.div>
@@ -138,10 +138,12 @@ const Contact = () => {
 
               {/* Social Links */}
               <div>
-                <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Follow Me</h4>
+                <h4 className="text-lg font-semibold mb-4" style={{ color: 'var(--text)' }}>Follow Me</h4>
                 <div className="flex gap-4">
                   {socialLinks.map((social, index) => (
-                    <motion.a key={index} whileHover={{ scale: 1.1, y: -2 }} href={social.url} target="_blank" rel="noopener noreferrer" className={`p-3 bg-white dark:bg-gray-800 rounded-lg shadow-md text-gray-600 dark:text-gray-400 ${social.color} transition-colors`}>{social.icon}</motion.a>
+                    <motion.a key={index} whileHover={{ scale: 1.1, y: -2 }} href={social.url} target="_blank" rel="noopener noreferrer" style={{ padding: 12, borderRadius: 8, background: 'var(--surface)', color: 'var(--muted)' }}>
+                      {social.icon}
+                    </motion.a>
                   ))}
                 </div>
               </div>
@@ -149,40 +151,40 @@ const Contact = () => {
 
             {/* Contact Form */}
             <motion.div variants={itemVariants}>
-              <div className="card">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Send Message</h3>
+              <div style={{ background: 'var(--surface)', padding: 20, borderRadius: 12 }}>
+                <h3 className="text-2xl font-bold mb-6" style={{ color: 'var(--text)' }}>Send Message</h3>
                 
                 <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div>
-                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
-                      <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors" placeholder="Your name" />
+                      <label htmlFor="name" className="block text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Name *</label>
+                      <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg" placeholder="Your name" style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.06)', color: 'var(--text)' }} />
                     </div>
                     <div>
-                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email *</label>
-                      <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors" placeholder="your.email@example.com" />
+                      <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Email *</label>
+                      <input type="email" id="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg" placeholder="your.email@example.com" style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.06)', color: 'var(--text)' }} />
                     </div>
                   </div>
 
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Subject *</label>
-                    <input type="text" id="subject" name="subject" value={formData.subject} onChange={handleInputChange} required className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors" placeholder="What's this about?" />
+                    <label htmlFor="subject" className="block text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Subject *</label>
+                    <input type="text" id="subject" name="subject" value={formData.subject} onChange={handleInputChange} required className="w-full px-4 py-3 rounded-lg" placeholder="What's this about?" style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.06)', color: 'var(--text)' }} />
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Message *</label>
-                    <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={6} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors resize-none" placeholder="Tell me about your project or just say hello!" />
+                    <label htmlFor="message" className="block text-sm font-medium mb-2" style={{ color: 'var(--muted)' }}>Message *</label>
+                    <textarea id="message" name="message" value={formData.message} onChange={handleInputChange} required rows={6} className="w-full px-4 py-3 rounded-lg" placeholder="Tell me about your project or just say hello!" style={{ background: 'transparent', border: '1px solid rgba(0,0,0,0.06)', color: 'var(--text)' }} />
                   </div>
 
                   {/* Inline Status Message */}
                   {statusMessage && (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className={`text-sm font-medium ${statusType === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ color: statusType === 'success' ? '#16a34a' : '#dc2626' }}>
                       {statusMessage}
                     </motion.div>
                   )}
 
-                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={isSubmitting} className="w-full btn-primary justify-center disabled:opacity-50 disabled:cursor-not-allowed">
-                    {isSubmitting ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <FiSend />}
+                  <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={isSubmitting} style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: 8, background: 'var(--accent)', color: '#fff', display: 'flex', justifyContent: 'center', gap: 8 }}>
+                    {isSubmitting ? <div style={{ width: 20, height: 20, border: '2px solid #fff', borderTop: '2px solid transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> : <FiSend />}
                     {isSubmitting ? 'Sending...' : 'Send Message'}
                   </motion.button>
                 </form>

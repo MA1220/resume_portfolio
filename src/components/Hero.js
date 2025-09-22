@@ -36,7 +36,11 @@ const Hero = () => {
   };
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center section-padding pt-20 relative">
+    <section
+      id="home"
+      className="min-h-screen flex items-center justify-center section-padding pt-20 relative"
+      style={{ background: 'var(--bg)', color: 'var(--text)' }}
+    >
       <div className="container-max">
         <motion.div
           variants={containerVariants}
@@ -46,9 +50,15 @@ const Hero = () => {
         >
           {/* Profile Image */}
           <motion.div variants={itemVariants} className="mb-8">
-            <div className="w-36 h-36 mx-auto mb-6 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 p-1">
-              <div className="w-full h-full rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                <span className="text-4xl font-bold text-gray-600 dark:text-gray-300">
+            <div
+              className="w-36 h-36 mx-auto mb-6 rounded-full p-1"
+              style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}
+            >
+              <div
+                className="w-full h-full rounded-full flex items-center justify-center"
+                style={{ background: 'var(--surface)' }}
+              >
+                <span style={{ color: 'var(--muted)', fontSize: 28, fontWeight: 700 }}>
                   MA
                 </span>
               </div>
@@ -56,28 +66,46 @@ const Hero = () => {
           </motion.div>
 
           {/* Name and Title */}
-          <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl font-bold text-gray-900 dark:text-white mb-2">
+          <motion.h1
+            variants={itemVariants}
+            className="text-5xl md:text-6xl font-bold mb-2"
+            style={{ color: 'var(--text)' }}
+          >
             Maheshwar <span className="text-gradient">Awale</span>
           </motion.h1>
 
-          <motion.h2 variants={itemVariants} className="text-2xl md:text-3xl font-semibold text-gray-700 dark:text-gray-300 mb-4">
+          <motion.h2
+            variants={itemVariants}
+            className="text-2xl md:text-3xl font-semibold mb-4"
+            style={{ color: 'var(--muted)' }}
+          >
             Software Development Engineer 1
           </motion.h2>
 
           {/* Quick Info (location + phone) */}
-          <motion.div variants={itemVariants} className="flex items-center justify-center gap-6 text-sm text-gray-600 dark:text-gray-400 mb-6">
+          <motion.div
+            variants={itemVariants}
+            className="flex items-center justify-center gap-6 text-sm mb-6"
+            style={{ color: 'var(--muted)' }}
+          >
             <div className="flex items-center gap-2">
               <FiMapPin />
               <span>Navi Mumbai, India</span>
             </div>
             <div className="flex items-center gap-2">
               <FiPhone />
-              <a href="tel:+919321825853" className="hover:underline">+91-9321825853</a>
+              <a href="tel:+919321825853" className="hover:underline" style={{ color: 'var(--muted)' }}>
+                +91-9321825853
+              </a>
             </div>
           </motion.div>
 
           {/* Tagline */}
-          <motion.p variants={itemVariants} className="text-lg md:text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-3xl mx-auto leading-relaxed">
+          <motion.p
+            variants={itemVariants}
+            className="text-lg md:text-xl mb-8 max-w-3xl mx-auto leading-relaxed"
+            style={{ color: 'var(--muted)' }}
+          >
             Scaling backend services for 500M+ users with sub-100ms APIs and 1000+ QPS.
             Led cloud migrations (Azure → GCP) and built search & Elasticsearch-based APIs — focused on reliability, performance, and cost-efficiency.
           </motion.p>
@@ -88,7 +116,8 @@ const Hero = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={handleDownloadResume}
-              className="btn-primary flex items-center gap-2"
+              className="flex items-center gap-2"
+              style={{ background: 'var(--accent)', color: '#fff', padding: '0.6rem 1rem', borderRadius: 8 }}
             >
               <FiDownload />
               Download Resume
@@ -98,7 +127,8 @@ const Hero = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="btn-secondary flex items-center gap-2"
+              className="flex items-center gap-2"
+              style={{ background: 'transparent', color: 'var(--text)', padding: '0.6rem 1rem', borderRadius: 8, border: '1px solid rgba(0,0,0,0.06)' }}
             >
               <FiMail />
               Get In Touch
@@ -112,7 +142,8 @@ const Hero = () => {
               href="https://linkedin.com/in/maheshwar-a-02b6b6163"
               target="_blank"
               rel="noopener noreferrer"
-              className="p-3 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
+              className="p-3 rounded-full transition-colors duration-200"
+              style={{ background: 'var(--surface)', color: 'var(--muted)' }}
             >
               <FiLinkedin size={22} />
             </motion.a>
@@ -120,7 +151,8 @@ const Hero = () => {
             <motion.a
               whileHover={{ scale: 1.15, y: -4 }}
               href="mailto:maheshwarawale12@gmail.com"
-              className="p-3 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200"
+              className="p-3 rounded-full transition-colors duration-200"
+              style={{ background: 'var(--surface)', color: 'var(--muted)' }}
             >
               <FiMail size={22} />
             </motion.a>
@@ -129,14 +161,17 @@ const Hero = () => {
           {/* Small skill chips */}
           <motion.div variants={itemVariants} className="flex flex-wrap justify-center gap-3">
             {["Java", "Spring Boot", "Elasticsearch", "GCP", "Microservices"].map((skill) => (
-              <span key={skill} className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
+              <span
+                key={skill}
+                className="px-3 py-1 rounded-full text-sm font-medium"
+                style={{ background: 'var(--surface)', color: 'var(--muted)' }}
+              >
                 {skill}
               </span>
             ))}
           </motion.div>
         </motion.div>
       </div>
-
     </section>
   );
 };
