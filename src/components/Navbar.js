@@ -49,9 +49,13 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
       role="navigation"
       aria-label="Main navigation"
       style={{
-        background: isScrolled ? 'rgba(255,255,255,0.9)' : 'transparent',
-        backdropFilter: isScrolled ? 'blur(6px)' : 'none',
+        background: isScrolled
+          ? (darkMode ? 'rgba(12, 18, 32, 0.7)' : 'rgba(255, 255, 255, 0.8)')
+          : 'transparent',
+        backdropFilter: isScrolled ? 'blur(10px)' : 'none',
+        WebkitBackdropFilter: isScrolled ? 'blur(10px)' : 'none',
         boxShadow: isScrolled ? '0 8px 30px rgba(2,6,23,0.08)' : 'none',
+        borderBottom: isScrolled ? (darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)') : 'none',
         color: 'var(--text)'
       }}
     >

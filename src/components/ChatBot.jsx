@@ -75,11 +75,21 @@ function Message({ role, text }) {
 
 export default function ChatBot({ defaultOpen = true, onClose }) {
   const [input, setInput] = useState('');
+  const [optInHistory, setOptInHistory] = useState(() => {
+    if (!isBrowser()) return false;
+    try {
+      const v = localStorage.getItem('chatbot_history_opt_in');
+      return v ? v === 'true' : false;
+    } catch {
+      return false;
+    }
+  });
   const [messages, setMessages] = useState(() => {
     if (!isBrowser()) return [];
     try {
       const saved = localStorage.getItem('chatbot_history');
-      return saved ? JSON.parse(saved) : [];
+      const opted = localStorage.getItem('chatbot_history_opt_in');
+      return opted === 'true' && saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }
@@ -91,9 +101,17 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
   useEffect(() => {
     if (!isBrowser()) return;
     try {
+      localStorage.setItem('chatbot_history_opt_in', optInHistory ? 'true' : 'false');
+    } catch {}
+  }, [optInHistory]);
+
+  useEffect(() => {
+    if (!isBrowser()) return;
+    if (!optInHistory) return;
+    try {
       localStorage.setItem('chatbot_history', JSON.stringify(messages));
     } catch {}
-  }, [messages]);
+  }, [messages, optInHistory]);
 
   useEffect(() => {
     if (listRef.current) {
@@ -108,15 +126,52 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
     setMessages(prev => [...prev, { role: 'user', text }]);
   }
 
+  // Typo normalization for common intents
+  function normalize(text) {
+    const t = (text || '').trim().toLowerCase();
+    const map = new Map([
+      ['helo', 'help'], ['hlep', 'help'], ['hep', 'help'],
+      ['emial', 'email'], ['e-mail', 'email'], ['mai', 'mail'], ['maol', 'mail'],
+      ['phon', 'phone'], ['phne', 'phone'], ['moblie', 'mobile'], ['moblile', 'mobile'],
+      ['skils', 'skills'], ['skill', 'skills'],
+      ['projcts', 'projects'], ['project', 'projects'],
+      ['experiance', 'experience'], ['experinace', 'experience'],
+      ['contct', 'contact'], ['cantact', 'contact'],
+      ['them', 'theme'], ['themee', 'theme']
+    ]);
+    if (map.has(t)) return map.get(t);
+    return t;
+  }
+
+  function scrollToSection(id, msg) {
+    if (msg) addBot(msg);
+    if (!isBrowser()) return;
+    const el = document.querySelector(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
   function handleHelp() {
     addBot(
       [
         'I can help with these commands:',
-        '• show skills – list your skills',
-        '• mail / email – show your email',
-        '• phone / mobile – show your phone number',
-        '• theme <name> – switch theme (e.g., theme Default, theme Netflix, theme Apple)',
-        '• help – show this help'
+        '• show skills — list your skills',
+        '• mail / email — show your email',
+        '• phone / mobile — show your phone number',
+        '• theme <name> — switch theme (e.g., theme Default, theme Netflix, theme Apple)',
+        '• help — show this help',
+        '',
+        'Shortcuts to sections:',
+        '• about — jump to About me',
+        '• skills — jump to Skills',
+        '• experience — jump to Experience',
+        '• projects — jump to Projects',
+        '• contact — jump to Get in Touch',
+        '',
+        'Try examples:',
+        '• "show skills"',
+        '• "email"',
+        '• "phone"',
+        '• "projects"'
       ].join('\n')
     );
   }
@@ -140,12 +195,8 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
   }
 
   function handlePhone() {
-    const phone = data.contact?.phone;
-    if (phone) {
-      addBot(`Your phone is ${phone}.`);
-    } else {
-      addBot('I could not find a phone number.');
-    }
+    // Exact phrasing required
+    addBot('Maheshwar mobile number is +919321825853.');
   }
 
   function handleTheme(nameRaw) {
@@ -166,7 +217,7 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
 
   function interpretCommand(text) {
     const t = text.trim();
-    const lower = t.toLowerCase();
+    const lower = normalize(t);
 
     if (lower === 'help' || lower === 'commands') return handleHelp();
     if (lower === 'show skills' || lower === 'skills') return handleShowSkills();
@@ -178,6 +229,14 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
       const name = t.slice(6);
       return handleTheme(name);
     }
+
+    // Section redirects
+    if (['contact', 'get in touch'].includes(lower)) return scrollToSection('#contact', 'Taking you to the Contact section...');
+    if (['projects', 'project'].includes(lower)) return scrollToSection('#projects', 'Jumping to Projects...');
+    if (['skills', 'skill'].includes(lower)) return scrollToSection('#skills', 'Jumping to Skills...');
+    if (['about', 'about me'].includes(lower)) return scrollToSection('#about', 'Jumping to About me...');
+    if (['experience', 'experiences'].includes(lower)) return scrollToSection('#experience', 'Jumping to Experience...');
+    if (['home'].includes(lower)) return scrollToSection('#home', 'Back to Home...');
 
     // Default small talk
     addBot("I didn't understand. Type 'help' to see what I can do.");
@@ -206,8 +265,17 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
         background: 'var(--surface)'
       }}
     >
-      <div style={{ padding: '12px 14px', background: 'var(--bg)', borderBottom: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ padding: '12px 14px', background: 'var(--bg)', borderBottom: '1px solid rgba(0,0,0,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
         <strong style={{ color: 'var(--text)' }}>Portfolio Chat</strong>
+        <label title="Persist chat history on this device" style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted)', fontSize: 12 }}>
+          <input
+            type="checkbox"
+            checked={optInHistory}
+            onChange={(e) => setOptInHistory(e.target.checked)}
+            aria-label="Persist chat history"
+          />
+          Save history
+        </label>
         {onClose && (
           <button onClick={onClose} style={{ color: 'var(--muted)' }} aria-label="Close chat">✕</button>
         )}
@@ -215,7 +283,10 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
 
       <div ref={listRef} style={{ flex: 1, overflowY: 'auto', padding: 12, background: 'var(--bg)' }}>
         {messages.length === 0 && (
-          <Message role="bot" text="Hi! Ask me to 'show skills', 'mail', 'phone', 'theme Netflix', or type 'help'." />
+          <Message role="bot" text={[
+            "Hi! I can jump to sections and answer quick questions.",
+            "Try: 'show skills', 'email', 'phone', 'projects', 'about', or type 'help'."
+          ].join('\n')} />
         )}
         {messages.map((m, i) => (
           <Message key={i} role={m.role} text={m.text} />
