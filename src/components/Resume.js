@@ -26,8 +26,13 @@ const Resume = () => {
   };
 
   const handleDownloadResume = () => {
+    try { window.analytics?.recordResumeDownload?.(); } catch {}
+    if (typeof window.triggerResumeDownload === 'function') {
+      window.triggerResumeDownload();
+      return;
+    }
+    // Fallback direct download
     const link = document.createElement('a');
-    // put Maheshwar_Awale_Resume.pdf in your public/ folder
     link.href = `${process.env.PUBLIC_URL}/Maheshwar_Resume.pdf`;
     link.download = 'Maheshwar_Resume.pdf';
     document.body.appendChild(link);
@@ -36,7 +41,8 @@ const Resume = () => {
   };
 
   const handleViewResume = () => {
-    window.open(`${process.env.PUBLIC_URL}/Maheshwar_Resume.pdf`, '_blank');
+    try { window.analytics?.recordResumeView?.(); } catch {}
+    window.open(`${process.env.PUBLIC_URL}/Maheshwar_Resume.pdf`, '_blank', 'noopener,noreferrer');
   };
 
   const resumeHighlights = [

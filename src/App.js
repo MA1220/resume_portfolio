@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -9,6 +9,7 @@ import Resume from './components/Resume';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBot';
+import AdminStatsInteractive from './pages/AdminStatsInteractive';
 
 // SSR guard
 const isBrowser = () => typeof window !== 'undefined' && typeof document !== 'undefined';
@@ -147,6 +148,11 @@ function applyThemeByName(name) {
   const root = document.documentElement;
   Object.entries(cfg).forEach(([k, v]) => root.style.setProperty(k, v));
   try { localStorage.setItem('themeName', name); } catch {}
+  // Notify listeners (e.g., Navbar) that theme variables changed
+  try {
+    const ev = new Event('themechange');
+    window.dispatchEvent(ev);
+  } catch {}
   return true;
 }
 
@@ -169,10 +175,17 @@ function collectPortfolioDataFromDOM() {
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showPalette, setShowPalette] = useState(false);
+  const [paletteQuery, setPaletteQuery] = useState('');
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const isChatRoute = useMemo(() => {
     if (!isBrowser()) return false;
     return window.location && window.location.pathname === '/chat';
+  }, []);
+  const isAdminStatsRoute = useMemo(() => {
+    if (!isBrowser()) return false;
+    return window.location && window.location.pathname === '/admin-stats';
   }, []);
 
   // Initial theme and dark mode sync
@@ -204,6 +217,8 @@ function App() {
   useEffect(() => {
     if (!isBrowser()) return;
     window.applyTheme = (name) => applyThemeByName(name);
+    // Expose theme names for palettes/switchers
+    window.THEME_NAMES = Object.keys(THEME_CONFIGS);
 
     // Populate window.PORTFOLIO_DATA from DOM after first paint
     const populate = () => {
@@ -218,6 +233,169 @@ function App() {
 
   const toggleDarkMode = () => setDarkMode((d) => !d);
 
+  // ---------- Analytics (localStorage) ----------
+  const getAnalytics = useCallback(() => {
+    if (!isBrowser()) return {};
+    try {
+      // Prefer v1 key; fallback to old key
+      const rawV1 = localStorage.getItem('site_analytics_v1');
+      if (rawV1) return JSON.parse(rawV1);
+      const rawLegacy = localStorage.getItem('analytics');
+      return rawLegacy ? JSON.parse(rawLegacy) : {};
+    } catch {
+      return {};
+    }
+  }, []);
+
+  const saveAnalytics = useCallback((obj) => {
+    if (!isBrowser()) return;
+    try {
+      localStorage.setItem('site_analytics_v1', JSON.stringify(obj));
+    } catch {}
+  }, []);
+
+  const appendLog = useCallback((metric, note = 'auto') => {
+    if (!isBrowser()) return;
+    try {
+      const raw = localStorage.getItem('site_analytics_v1_logs');
+      const logs = raw ? JSON.parse(raw) : {};
+      const arr = Array.isArray(logs[metric]) ? logs[metric] : [];
+      arr.unshift({ t: new Date().toISOString(), metric, note });
+      logs[metric] = arr.slice(0, 100);
+      localStorage.setItem('site_analytics_v1_logs', JSON.stringify(logs));
+    } catch {}
+  }, []);
+
+  const increment = useCallback((key, note = 'auto') => {
+    const a = getAnalytics();
+    a[key] = (a[key] || 0) + 1;
+    saveAnalytics(a);
+    appendLog(key, note);
+  }, [getAnalytics, saveAnalytics, appendLog]);
+
+  const recordVisit = useCallback(() => increment('visits'), [increment]);
+  const recordChatOpen = useCallback(() => increment('chat_opens'), [increment]);
+  const recordChatMessage = useCallback(() => increment('chat_messages'), [increment]);
+  const recordResumeView = useCallback(() => increment('resume_views'), [increment]);
+  const recordResumeDownload = useCallback(() => increment('resume_downloads'), [increment]);
+
+  // Expose analytics globally for other components
+  useEffect(() => {
+    if (!isBrowser()) return;
+    window.analytics = {
+      recordVisit,
+      recordChatOpen,
+      recordChatMessage,
+      recordResumeView,
+      recordResumeDownload,
+      get: getAnalytics
+    };
+  }, [recordVisit, recordChatOpen, recordChatMessage, recordResumeView, recordResumeDownload, getAnalytics]);
+
+  // Record visit on mount
+  useEffect(() => {
+    recordVisit();
+  }, [recordVisit]);
+
+  // Admin flag and Export Stats button
+  useEffect(() => {
+    if (!isBrowser()) return;
+    const params = new URLSearchParams(window.location.search);
+    setIsAdmin(params.get('admin') === 'true');
+  }, []);
+
+  const exportAnalyticsCSV = useCallback(() => {
+    const a = getAnalytics();
+    const rows = [
+      ['metric', 'count'],
+      ['visits', a.visits || 0],
+      ['chat_opens', a.chat_opens || 0],
+      ['chat_messages', a.chat_messages || 0],
+      ['resume_views', a.resume_views || 0],
+      ['resume_downloads', a.resume_downloads || 0],
+    ];
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'analytics.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }, [getAnalytics]);
+
+  // Global resume download trigger
+  useEffect(() => {
+    if (!isBrowser()) return;
+    window.triggerResumeDownload = () => {
+      try { recordResumeDownload(); } catch {}
+      const link = document.createElement('a');
+      const href = `${process.env.PUBLIC_URL || ''}/resume.pdf`;
+      link.href = href;
+      link.download = 'resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+  }, [recordResumeDownload]);
+
+  // ---------- Command Palette ----------
+  const openPalette = useCallback(() => setShowPalette(true), []);
+  const closePalette = useCallback(() => { setShowPalette(false); setPaletteQuery(''); }, []);
+
+  useEffect(() => {
+    if (!isBrowser()) return;
+    const onKey = (e) => {
+      // Ignore if focused in input/textarea
+      const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+      const isTyping = tag === 'input' || tag === 'textarea';
+      if (e.key === '/' && !isTyping) {
+        e.preventDefault();
+        openPalette();
+      }
+      if (e.key === 'Escape') closePalette();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [openPalette, closePalette]);
+
+  const commands = useMemo(() => ([
+    { key: 'skills', label: 'Skills — list your skills', action: () => {
+      const el = document.querySelector('#skills');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      closePalette();
+    }},
+    { key: 'projects', label: 'Projects — jump to projects', action: () => {
+      const el = document.querySelector('#projects');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+      closePalette();
+    }},
+    { key: 'resume', label: 'Resume — download', action: () => {
+      try { window.analytics?.recordResumeDownload?.(); } catch {}
+      window.triggerResumeDownload?.();
+      closePalette();
+    }},
+    { key: 'help', label: 'Help — show chatbot help', action: () => {
+      // Navigate to chat route to show help context
+      // Or open chat panel if available
+      setShowChat(true);
+      closePalette();
+    }},
+    { key: 'theme', label: 'Theme — choose a theme', action: () => {
+      // Handled specially to expand list of themes below
+    }},
+  ]), [closePalette]);
+
+  const themeOptions = useMemo(() => (isBrowser() ? (window.THEME_NAMES || Object.keys(THEME_CONFIGS)) : Object.keys(THEME_CONFIGS)), []);
+
+  const filteredCommands = useMemo(() => {
+    const q = paletteQuery.trim().toLowerCase();
+    if (!q) return commands;
+    return commands.filter(c => c.key.includes(q) || c.label.toLowerCase().includes(q));
+  }, [paletteQuery, commands]);
+
   return (
     <div
       className="min-h-screen transition-colors duration-300"
@@ -228,6 +406,10 @@ function App() {
         {isChatRoute ? (
           <section className="section-padding container-max" style={{ paddingTop: 24, paddingBottom: 24 }}>
             <ChatBot defaultOpen={true} />
+          </section>
+        ) : isAdminStatsRoute ? (
+          <section className="section-padding container-max" style={{ paddingTop: 24, paddingBottom: 24 }}>
+            <AdminStatsInteractive />
           </section>
         ) : (
           <>
@@ -252,7 +434,7 @@ function App() {
             </div>
           ) : (
             <button
-              onClick={() => setShowChat(true)}
+              onClick={() => { setShowChat(true); }}
               style={{
                 width: 56,
                 height: 56,
@@ -268,6 +450,77 @@ function App() {
             </button>
           )}
         </div>
+      )}
+
+      {/* Command Palette Overlay */}
+      {showPalette && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60, background: 'rgba(0,0,0,0.5)' }} onClick={closePalette}>
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              position: 'absolute',
+              top: '15%',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 'min(720px, 92vw)',
+              background: 'var(--surface)',
+              borderRadius: 12,
+              boxShadow: '0 20px 60px rgba(0,0,0,0.35)'
+            }}
+          >
+            <div style={{ padding: 12, borderBottom: '1px solid rgba(0,0,0,0.08)' }}>
+              <input
+                autoFocus
+                value={paletteQuery}
+                onChange={(e) => setPaletteQuery(e.target.value)}
+                placeholder="Type a command (skills, projects, theme, resume, help)..."
+                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid rgba(0,0,0,0.08)', background: 'transparent', color: 'var(--text)' }}
+              />
+            </div>
+            <div style={{ maxHeight: 360, overflowY: 'auto', padding: 8 }}>
+              {/* Main commands */}
+              {filteredCommands.map((cmd) => (
+                <button
+                  key={cmd.key}
+                  onClick={() => cmd.action && cmd.action()}
+                  style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 12px', borderRadius: 8, color: 'var(--text)', background: 'transparent' }}
+                >
+                  {cmd.label}
+                </button>
+              ))}
+
+              {/* Theme picker when 'theme' is relevant */}
+              {(paletteQuery.trim().toLowerCase().startsWith('theme') || paletteQuery.trim() === '' ) && (
+                <div style={{ paddingTop: 8 }}>
+                  <div style={{ fontSize: 12, color: 'var(--muted)', padding: '6px 10px' }}>Themes</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 8, padding: '0 8px 12px' }}>
+                    {themeOptions.map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => { window.applyTheme?.(t); closePalette(); }}
+                        style={{ padding: '10px 12px', borderRadius: 8, background: 'rgba(0,0,0,0.04)', color: 'var(--text)', textAlign: 'left' }}
+                        title={`Switch to ${t}`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Admin-only Export Stats */}
+      {isAdmin && (
+        <button
+          onClick={exportAnalyticsCSV}
+          style={{ position: 'fixed', bottom: 20, left: 20, zIndex: 70, padding: '10px 12px', borderRadius: 8, background: 'var(--surface)', color: 'var(--text)', border: '1px solid rgba(0,0,0,0.08)' }}
+          title="Export analytics as CSV"
+        >
+          Export Stats
+        </button>
       )}
     </div>
   );

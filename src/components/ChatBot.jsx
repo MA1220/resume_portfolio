@@ -100,6 +100,8 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
 
   useEffect(() => {
     if (!isBrowser()) return;
+    // Record chat open when component mounts (floating or /chat route)
+    try { window.analytics?.recordChatOpen?.(); } catch {}
     try {
       localStorage.setItem('chatbot_history_opt_in', optInHistory ? 'true' : 'false');
     } catch {}
@@ -157,7 +159,9 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
         '• show skills — list your skills',
         '• mail / email — show your email',
         '• phone / mobile — show your phone number',
-        '• theme <name> — switch theme (e.g., theme Default, theme Netflix, theme Apple)',
+        '• theme <name> — switch theme (e.g., theme Default, theme Google, theme GeminiAI)',
+        '• projects — jump to Projects section',
+        '• resume — download your resume',
         '• help — show this help',
         '',
         'Shortcuts to sections:',
@@ -171,7 +175,9 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
         '• "show skills"',
         '• "email"',
         '• "phone"',
-        '• "projects"'
+        '• "projects"',
+        '',
+        'Tip: Press "/" anywhere to open the Command Palette for quick actions and theme switching.'
       ].join('\n')
     );
   }
@@ -223,6 +229,11 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
     if (lower === 'show skills' || lower === 'skills') return handleShowSkills();
     if (lower === 'mail' || lower === 'email') return handleEmail();
     if (lower === 'phone' || lower === 'mobile') return handlePhone();
+    if (lower === 'resume') {
+      try { window.analytics?.recordResumeDownload?.(); } catch {}
+      window.triggerResumeDownload?.();
+      return;
+    }
 
     const themeMatch = lower.startsWith('theme ');
     if (themeMatch) {
@@ -246,6 +257,7 @@ export default function ChatBot({ defaultOpen = true, onClose }) {
     if (e) e.preventDefault();
     const text = input.trim();
     if (!text) return;
+    try { window.analytics?.recordChatMessage?.(); } catch {}
     addUser(text);
     setInput('');
     setTimeout(() => interpretCommand(text), 50);
