@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { FiSun, FiMoon, FiMenu, FiX, FiLinkedin, FiMail, FiDownload } from 'react-icons/fi';
 
 const Navbar = ({ darkMode, toggleDarkMode }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [navTextDark, setNavTextDark] = useState(false); // true => force dark text (black-ish)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +15,56 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Compute luminance of CSS color
+  function parseColorToRGB(c) {
+    if (!c) return [0, 0, 0];
+    const s = c.trim();
+    if (s.startsWith('#')) {
+      const hex = s.slice(1);
+      const full = hex.length === 3
+        ? hex.split('').map(ch => ch + ch).join('')
+        : hex.padEnd(6, '0');
+      const num = parseInt(full.slice(0, 6), 16);
+      return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+    }
+    if (s.startsWith('rgb')) {
+      const m = s.match(/rgba?\(([^)]+)\)/i);
+      if (m) {
+        const parts = m[1].split(',').map(x => parseFloat(x.trim()));
+        return [parts[0] || 0, parts[1] || 0, parts[2] || 0];
+      }
+    }
+    return [0, 0, 0];
+  }
+
+  function isLightColor(c) {
+    const [r, g, b] = parseColorToRGB(c);
+    // perceived brightness
+    const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+    return brightness > 200; // threshold for very light backgrounds
+  }
+
+  const recomputeNavText = () => {
+    try {
+      const cs = getComputedStyle(document.documentElement);
+      const bg = cs.getPropertyValue('--bg');
+      setNavTextDark(isLightColor(bg));
+    } catch {
+      setNavTextDark(false);
+    }
+  };
+
+  useEffect(() => {
+    recomputeNavText();
+    const onTheme = () => recomputeNavText();
+    window.addEventListener('themechange', onTheme);
+    return () => window.removeEventListener('themechange', onTheme);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const navTextColor = useMemo(() => (navTextDark ? '#111111' : 'var(--text)'), [navTextDark]);
+  const navMutedColor = useMemo(() => (navTextDark ? '#1f2937' : 'var(--muted)'), [navTextDark]);
 
   const navItems = [
     { name: 'Home', href: '#home' },
@@ -30,8 +81,14 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     setIsMobileMenuOpen(false);
 
     if (external) {
-      // open external link (resume)
-      window.open(href, '_blank', 'noopener,noreferrer');
+      // Resume download: log and trigger centralized download
+      try { window.analytics?.recordResumeDownload?.(); } catch {}
+      if (typeof window.triggerResumeDownload === 'function') {
+        window.triggerResumeDownload();
+      } else {
+        // Fallback open
+        window.open(href, '_blank', 'noopener,noreferrer');
+      }
       return;
     }
 
@@ -45,13 +102,19 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-lg'
-          : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300`}
       role="navigation"
       aria-label="Main navigation"
+      style={{
+        background: isScrolled
+          ? (darkMode ? 'rgba(12, 18, 32, 0.7)' : 'rgba(255, 255, 255, 0.8)')
+          : 'transparent',
+        backdropFilter: isScrolled ? 'blur(10px)' : 'none',
+        WebkitBackdropFilter: isScrolled ? 'blur(10px)' : 'none',
+        boxShadow: isScrolled ? '0 8px 30px rgba(2,6,23,0.08)' : 'none',
+        borderBottom: isScrolled ? (darkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)') : 'none',
+        color: navTextColor
+      }}
     >
       <div className="container-max section-padding">
         <div className="flex items-center justify-between h-16">
@@ -62,10 +125,10 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             onClick={() => scrollToSection('#home')}
             aria-label="Go to home"
           >
-            <div className="w-9 h-9 rounded-full bg-gradient-to-r from-primary-500 to-purple-600 flex items-center justify-center text-white font-bold">
+            <div className="w-9 h-9 rounded-full flex items-center justify-center font-bold" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)', color: '#fff' }}>
               MA
             </div>
-            <div className="text-lg font-semibold text-gray-900 dark:text-white">
+            <div style={{ color: navTextColor, fontSize: 16, fontWeight: 600 }}>
               Maheshwar Awale
             </div>
           </motion.div>
@@ -77,11 +140,11 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 key={item.name}
                 whileHover={{ y: -2 }}
                 onClick={() => scrollToSection(item.href, item.external)}
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  item.external
-                    ? 'text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
-                }`}
+                className="px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                style={{
+                  background: 'transparent',
+                  color: item.external ? 'var(--accent)' : navTextColor
+                }}
                 aria-label={item.name}
               >
                 {item.name}
@@ -94,7 +157,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="LinkedIn"
-              className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              style={{ padding: 8, borderRadius: 8, background: 'var(--surface)', color: navMutedColor }}
             >
               <FiLinkedin />
             </a>
@@ -102,7 +165,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             <a
               href="mailto:maheshwarawale12@gmail.com"
               aria-label="Email"
-              className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+              style={{ padding: 8, borderRadius: 8, background: 'var(--surface)', color: navMutedColor }}
             >
               <FiMail />
             </a>
@@ -112,8 +175,9 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleDarkMode}
-              className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
+              className="p-2 rounded-md"
               aria-label="Toggle dark mode"
+              style={{ background: 'var(--surface)', color: navMutedColor }}
             >
               {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
             </motion.button>
@@ -124,7 +188,7 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             <a
               href="mailto:maheshwarawale12@gmail.com"
               aria-label="Email"
-              className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors"
+              style={{ padding: 8, borderRadius: 8, background: 'var(--surface)', color: navMutedColor }}
             >
               <FiMail />
             </a>
@@ -133,8 +197,9 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={toggleDarkMode}
-              className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+              className="p-2 rounded-md"
               aria-label="Toggle dark mode"
+              style={{ background: 'var(--surface)', color: navMutedColor }}
             >
               {darkMode ? <FiSun size={18} /> : <FiMoon size={18} />}
             </motion.button>
@@ -142,8 +207,9 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setIsMobileMenuOpen((s) => !s)}
-              className="p-2 rounded-md bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+              className="p-2 rounded-md"
               aria-label="Toggle menu"
+              style={{ background: 'var(--surface)', color: navMutedColor }}
             >
               {isMobileMenuOpen ? <FiX size={22} /> : <FiMenu size={22} />}
             </motion.button>
@@ -165,11 +231,8 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
                 key={item.name}
                 whileHover={{ x: 8 }}
                 onClick={() => scrollToSection(item.href, item.external)}
-                className={`block w-full text-left px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                  item.external
-                    ? 'text-primary-700 dark:text-primary-300 hover:bg-primary-100 dark:hover:bg-primary-900'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400'
-                }`}
+                className="block w-full text-left px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                style={{ background: 'transparent', color: item.external ? 'var(--accent)' : navTextColor }}
                 aria-label={item.name}
               >
                 {item.name}
@@ -177,23 +240,23 @@ const Navbar = ({ darkMode, toggleDarkMode }) => {
             ))}
 
             <div className="flex items-center gap-3 px-4 pt-2">
-              <a
-                href="/Maheshwar_Resume.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-3 py-2 bg-primary-600 hover:bg-primary-700 rounded-md text-white font-medium"
+              <button
+                onClick={() => { try { window.analytics?.recordResumeDownload?.(); } catch {} ; window.triggerResumeDownload?.(); }}
+                className="inline-flex items-center gap-2 px-3 py-2 rounded-md"
                 aria-label="Download resume"
+                style={{ background: 'var(--accent)', color: '#fff' }}
               >
                 <FiDownload />
                 Resume
-              </a>
+              </button>
 
               <a
                 href="https://linkedin.com/in/maheshwar-a-02b6b6163"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-md bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300"
+                className="p-2 rounded-md"
                 aria-label="LinkedIn"
+                style={{ background: 'var(--surface)', color: navMutedColor }}
               >
                 <FiLinkedin />
               </a>

@@ -1,4 +1,3 @@
-// src/components/Skills.js
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -94,7 +93,7 @@ const Skills = () => {
   ];
 
   return (
-    <section id="skills" className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
+    <section id="skills" className="py-16 px-4 sm:px-6 lg:px-8" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <div className="container-max">
         <motion.div
           variants={containerVariants}
@@ -104,11 +103,11 @@ const Skills = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--text)' }}>
               Technical <span className="text-gradient">Skills</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-purple-600 mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <div className="w-24 h-1 mx-auto rounded-full mb-6" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}></div>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--muted)' }}>
               A comprehensive toolkit of modern technologies and frameworks I use to build robust applications
             </p>
           </motion.div>
@@ -121,7 +120,7 @@ const Skills = () => {
                 variants={itemVariants}
                 className="space-y-6"
               >
-                <h3 className="text-2xl font-semibold text-gray-900 dark:text-white text-center">
+                <h3 className="text-2xl font-semibold text-center" style={{ color: 'var(--text)' }}>
                   {category.title}
                 </h3>
 
@@ -137,11 +136,12 @@ const Skills = () => {
                       }}
                       className="card text-center group cursor-pointer"
                       title={skill.name}
+                      style={{ background: 'var(--surface)', padding: 16, borderRadius: 12 }}
                     >
-                      <div className={`text-3xl sm:text-4xl mb-2 sm:mb-3 ${skill.color} group-hover:scale-110 transition-transform duration-200`}>
+                      <div className="text-3xl sm:text-4xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform duration-200" style={{ color: 'var(--accent)' }}>
                         {skill.icon}
                       </div>
-                      <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                      <h4 className="text-sm font-medium" style={{ color: 'var(--text)' }}>
                         {skill.name}
                       </h4>
                     </motion.div>
@@ -153,8 +153,8 @@ const Skills = () => {
 
           {/* Additional Skills */}
           <motion.div variants={itemVariants} className="mt-16">
-            <div className="card">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 text-center">
+            <div className="card" style={{ background: 'var(--surface)', padding: 20, borderRadius: 12 }}>
+              <h3 className="text-xl font-semibold mb-4 text-center" style={{ color: 'var(--text)' }}>
                 Additional Competencies
               </h3>
               <div className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2">
@@ -166,7 +166,8 @@ const Skills = () => {
                   <motion.span
                     key={index}
                     whileHover={{ scale: 1.05 }}
-                    className="px-4 py-2 bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300 rounded-full text-sm font-medium"
+                    className="px-4 py-2 rounded-full text-sm font-medium"
+                    style={{ background: 'rgba(16,185,129,0.08)', color: 'var(--accent)' }}
                   >
                     {skill}
                   </motion.span>
