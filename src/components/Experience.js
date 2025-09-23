@@ -48,7 +48,7 @@ const Experience = () => {
   ];
 
   return (
-    <section id="experience" className="py-20 section-padding bg-white dark:bg-gray-800">
+    <section id="experience" className="py-20 section-padding" style={{ background: 'var(--bg)', color: 'var(--text)' }}>
       <div className="container-max">
         <motion.div
           variants={containerVariants}
@@ -58,11 +58,11 @@ const Experience = () => {
         >
           {/* Section Header */}
           <motion.div variants={itemVariants} className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--text)' }}>
               Work <span className="text-gradient">Experience</span>
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary-500 to-purple-600 mx-auto rounded-full mb-6"></div>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+            <div className="w-24 h-1 mx-auto rounded-full mb-6" style={{ background: 'linear-gradient(90deg,var(--accent), #7c3aed)' }}></div>
+            <p className="text-xl max-w-3xl mx-auto" style={{ color: 'var(--muted)' }}>
               My professional journey in software development, showcasing growth and key achievements
             </p>
           </motion.div>
@@ -70,7 +70,7 @@ const Experience = () => {
           {/* Timeline */}
           <div className="relative">
             {/* Timeline Line */}
-            <div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500 to-purple-600"></div>
+            <div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 top-0 bottom-0 w-0.5" style={{ background: 'linear-gradient(180deg,var(--accent), #7c3aed)' }}></div>
 
             {/* Experience Items */}
             <div className="space-y-12">
@@ -78,37 +78,32 @@ const Experience = () => {
                 <motion.div
                   key={index}
                   variants={itemVariants}
-                  className={`relative flex items-center ${
-                    index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-                  }`}
+                  className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
                 >
                   {/* Timeline Dot */}
-                  <div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 bg-primary-500 rounded-full border-4 border-white dark:border-gray-800 z-10"></div>
+                  <div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 w-4 h-4 rounded-full border-4 z-10" style={{ background: 'var(--accent)', borderColor: 'var(--bg)' }}></div>
 
                   {/* Content Card */}
                   <div className={`ml-20 md:ml-0 md:w-5/12 ${index % 2 === 0 ? 'md:mr-auto md:pr-8' : 'md:ml-auto md:pl-8'}`}>
-                    <motion.div
-                      whileHover={{ scale: 1.02 }}
-                      className="card"
-                    >
+                    <motion.div whileHover={{ scale: 1.02 }} style={{ background: 'var(--surface)', padding: 20, borderRadius: 12 }}>
                       {/* Header */}
                       <div className="mb-4">
                         <div className="flex items-center gap-2 mb-2">
-                          <FiBriefcase className="text-primary-500" />
-                          <span className="text-sm font-medium text-primary-600 dark:text-primary-400 uppercase tracking-wide">
+                          <FiBriefcase style={{ color: 'var(--accent)' }} />
+                          <span style={{ color: 'var(--accent)', textTransform: 'uppercase', fontSize: 12, fontWeight: 600 }}>
                             {exp.type}
                           </span>
                         </div>
                         
-                        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
+                        <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text)' }}>
                           {exp.title}
                         </h3>
                         
-                        <h4 className="text-lg font-semibold text-primary-600 dark:text-primary-400 mb-2">
+                        <h4 className="text-lg font-semibold mb-2" style={{ color: 'var(--accent)' }}>
                           {exp.company}
                         </h4>
                         
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2" style={{ color: 'var(--muted)' }}>
                           <div className="flex items-center gap-1">
                             <FiCalendar size={14} />
                             <span>{exp.period}</span>
@@ -122,13 +117,13 @@ const Experience = () => {
 
                       {/* Achievements */}
                       <div className="mb-4">
-                        <h5 className="font-semibold text-gray-900 dark:text-white mb-3">
+                        <h5 style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>
                           Key Achievements:
                         </h5>
                         <ul className="space-y-2">
                           {exp.achievements.map((achievement, achIndex) => (
-                            <li key={achIndex} className="flex items-start gap-2 text-gray-600 dark:text-gray-400">
-                              <span className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></span>
+                            <li key={achIndex} className="flex items-start gap-2" style={{ color: 'var(--muted)' }}>
+                              <span className="w-2 h-2 rounded-full mt-2 flex-shrink-0" style={{ background: 'var(--accent)' }}></span>
                               <span>{achievement}</span>
                             </li>
                           ))}
@@ -137,14 +132,15 @@ const Experience = () => {
 
                       {/* Technologies */}
                       <div>
-                        <h5 className="font-semibold text-gray-900 dark:text-white mb-3">
+                        <h5 style={{ fontWeight: 600, color: 'var(--text)', marginBottom: 8 }}>
                           Technologies Used:
                         </h5>
                         <div className="flex flex-wrap gap-2">
                           {exp.technologies.map((tech, techIndex) => (
                             <span
                               key={techIndex}
-                              className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium"
+                              className="px-3 py-1 rounded-full text-sm font-medium"
+                              style={{ background: 'rgba(0,0,0,0.04)', color: 'var(--muted)' }}
                             >
                               {tech}
                             </span>
